@@ -7,9 +7,11 @@ package com.thundersoft.codecasino;
  */
 public class MapUtil {
     static int sMapSize = -1;
-    static int sNum = -1;
+    static int sNum = -1;  //在LocationList、ScoreList的下标
     static String sMapBase;//初始一维地图
+
     static int[][] sMapInfo;//二维地图
+
     static String sToken;
     static int[] sLocationList;
     static int[] sScoreList;
@@ -25,53 +27,39 @@ public class MapUtil {
 
     }
 
+    public static int[] stringListToIntList(String list) {
+        String[] stringList = list.split(" ");
+        int[] intList = new int[stringList.length];
+        for (int i = 0; i < stringList.length; i++) {
+            intList[i] = Integer.valueOf(stringList[i]);
+        }
+        return intList;
+
+    }
+
     static public void parseMapInfo(String args) {
 
-        String sToken = args.substring(5, 7);
+        sToken = args.substring(5, 7);
 
-        String argsArrays[]= args.split("LOCATION");
-
-        sMapBase = argsArrays[1].substring(0, argsArrays[1].length() - 10);
-        System.out.println("Token: " + sToken + "\n" + " MapBase :" + sMapBase);
-
-        String locationListArrays[] = argsArrays[2].split("\\s+");
-        for (int i = 2; i < locationListArrays.length; i++) {
-            if (i == locationListArrays.length -1) {
-                sLocationList[i -2] = Integer.valueOf(locationListArrays[i].substring(0, locationListArrays[i].length() - 1));
-            } else {
-                sLocationList[i - 2] = Integer.valueOf(locationListArrays[i]);
-            }
+        String[] list1 = args.split("LOCATION ");
+        for (int i = 0; i < list1.length; i++) {
+            System.out.println("list1:" + i + "  = " + list1[i]);
         }
 
+        String[] list2 = list1[1].split("SCORE ");
+        for (int i = 0; i < list2.length; i++) {
+            System.out.println("list2:" + i + "  = " + list2[i]);
+        }
 
-//        String argsArrays[] = args.split("\\[");//"["分割
-//        System.out.println("argsArrays: " + argsArrays[0] + "\n" + " argsArrays :" + argsArrays);
-//        String tempArrays_1[] = argsArrays[0].split("\\s+");//空格分隔第一个 MAP
-//        sToken = tempArrays_1[1];
-//        sMapBase = tempArrays_1[2].substring(0, argsArrays[2].length() - 1);
-//        System.out.println("Token: " + sToken + "\n" + " MapBase :" + sMapBase);
-//
-//
-//        String tempArrays_2[] = argsArrays[1].split("\\s+");//空格分隔第二个 LOCATION
-//        for (int i = 2; i < tempArrays_2.length; i++) {
-//            if (i == tempArrays_2.length -1) {
-//                sLocationList[i -2] = Integer.valueOf(tempArrays_2[i].substring(0, tempArrays_2[i].length() - 1));
-//            } else {
-//                sLocationList[i - 2] = Integer.valueOf(tempArrays_2[i]);
-//            }
-//        }
-//        System.out.println("LocationList: " + sLocationList);
-//
-//        String tempArrays_3[] = argsArrays[2].split("\\s+");//空格分隔第三个 SCORE
-//        for (int i = 2; i < tempArrays_3.length; i++) {
-//            if (i == tempArrays_3.length -1) {
-//                sScoreList[i -2] = Integer.valueOf(tempArrays_3[i].substring(0, tempArrays_3[i].length() - 1));
-//            } else {
-//                sScoreList[i - 2] = Integer.valueOf(tempArrays_3[i]);
-//            }
-//        }
-//        System.out.println("ScoreList: " + sScoreList);
+        sMapBase = list1[0].substring(8, list1[0].length() - 2);
+        System.out.println("Token: " + sToken + "\n" + " MapBase :" + sMapBase);
+        String locationListString = list2[0].substring(3, list2[0].length() - 2);
+        String scoreListString = list2[1].substring(3, list2[1].length() - 1);
 
+        sLocationList = stringListToIntList(locationListString);
+        System.out.println("LocationList: " + sLocationList);
+        sScoreList = stringListToIntList(scoreListString);
+        System.out.println("ScoreList: " + sScoreList);
     }
 
 

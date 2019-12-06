@@ -14,7 +14,7 @@ public class Tree {
     Node mCurrentTreeNode = null;
 
     // 大于8后，未在0.2s内算完
-    private static int HMAX = 6;
+    private static int HMAX = 8;
 
     //储存所有的叶子节点
     List<Node> listNodes = new ArrayList<>();
