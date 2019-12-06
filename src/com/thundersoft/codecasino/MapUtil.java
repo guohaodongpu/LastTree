@@ -16,12 +16,23 @@ public class MapUtil {
     static int[] sLocationList;
     static int[] sScoreList;
 
+    static int sCurrentDirction;
+    static int x;
+    static int y;
+
+    static int mNumOfGhostAndBullet;
+    static int mNumOfPlayers;
+
+
+    static int[] sDirctions = new int[4];
+
+
     static public void parseMapSize(String args) {
         String argsArrays[] = args.split("\\s+");
         String temp = argsArrays[2].substring(0, argsArrays[2].length() - 1);
         sMapSize = Integer.valueOf(temp);
         sMapInfo = new char[sMapSize][sMapSize];
-        if (argsArrays[1].equals("#")){
+        if (argsArrays[1].equals("#")) {
             sNum = 10;
         } else {
             sNum = Integer.valueOf(argsArrays[1]);
@@ -68,7 +79,10 @@ public class MapUtil {
 
         createMap(sMapBase);
 
-        getLocationXY(sLocationList[sNum],sMapSize);
+        getLocationXY(sLocationList[sNum], sMapSize);
+        getCurrentDirection();
+
+        calculate();
     }
 
     public static int[] getLocationXY(int location, int mapSize) {
@@ -77,6 +91,8 @@ public class MapUtil {
         int locationX = location / mapSize;
         locationXY[0] = locationX;
         locationXY[1] = locationY;
+        x = locationX;
+        y = locationY;
         return locationXY;
     }
 
@@ -99,66 +115,155 @@ public class MapUtil {
         }
     }
 
-    public static String getCommand(){
+    public static String getCommand() {
 
         int temp = getPreciseCommand();
         //xx 第一位 1,2 -> 不发射，发射  |  第二位 0,1,2,3 -> 上，下，左，右
-        switch (temp){
-            case 10 :{
-                return "["+sToken+"w ]";
+        switch (temp) {
+            case 10: {
+                return "[" + sToken + "w ]";
             }
-            case 11 :{
-                return "["+sToken+"s ]";
+            case 11: {
+                return "[" + sToken + "s ]";
             }
-            case 12:{
-                return "["+sToken+"a ]";
+            case 12: {
+                return "[" + sToken + "a ]";
             }
-            case 13:{
-                return "["+sToken+"d ]";
+            case 13: {
+                return "[" + sToken + "d ]";
             }
-            case 14:{
-                return "["+sToken+"  ]";
+            case 14: {
+                return "[" + sToken + "  ]";
             }
-            case 20 :{
-                return "["+sToken+"wv]";
+            case 20: {
+                return "[" + sToken + "wv]";
             }
-            case 21:{
-                return "["+sToken+"sv]";
+            case 21: {
+                return "[" + sToken + "sv]";
             }
-            case 22:{
-                return "["+sToken+"av]";
+            case 22: {
+                return "[" + sToken + "av]";
             }
-            case 23:{
-                return "["+sToken+"dv]";
+            case 23: {
+                return "[" + sToken + "dv]";
             }
-            case 24:{
-                return "["+sToken+" v]";
+            case 24: {
+                return "[" + sToken + " v]";
             }
         }
         return null;
     }
 
-    public static int getPreciseCommand(){
+    public static int getPreciseCommand() {
 
+        if (mNumOfPlayers > 0) {
+            for (int i = 0; i < 4; i++) {
+                if (sDirctions[i] == 2) {
+                    if (sCurrentDirction == i) {
+                        return 24;
+                    } else {
+                        return 20;
+                    }
+                }
+            }
+        } else if (mNumOfGhostAndBullet > 1) {
+            return getCommandForCurrentDriction(1);
+        } else if (mNumOfGhostAndBullet == 1) {
+            for (int i = 0; i < 4; i++) {
+                if (sDirctions[i] == 1) {
+                    if (sCurrentDirction == i) {
+                        return 24;
+                    } else {
+                        return 20;
+                    }
+                }
+            }
+        }
+        Tree tree = new Tree();
+        tree.start();
+        return tree.getCommand();
 
-
-        return  0;
     }
 
-    public static boolean isHighestScore(){
-       if (sScoreList.length > 0){
-           int myScore = sScoreList[sNum];
-           int highestScore = 0;
-           for (int i = 0; i < sScoreList.length;i++ ) {
-               if (sScoreList[i] > highestScore) {
-                   highestScore = sScoreList[i];
-               }
-           }
-           if (myScore == highestScore){
-               return true;
-           }
-       }
-       return false;
+    public static int getCurrentDirection() {
+        char ch = sMapInfo[x][y];
+        if (ch == "w".charAt(0)) {
+            return 0;
+        }
+        if (ch == "s".charAt(0)) {
+            return 1;
+        }
+        if (ch == "a".charAt(0)) {
+            return 2;
+        }
+        if (ch == "d".charAt(0)) {
+            return 3;
+        }
+        return -1;
+    }
+
+    public static void calculate() {
+        if (!MapTools.isOutOfBounds(x - 1, y) && !MapTools.isWall(sMapInfo[x - 1][y])) {
+            if (MapTools.isGhost(sMapInfo[x - 1][y]) || sMapInfo[x - 1][y] == "v".charAt(0)) {
+                mNumOfGhostAndBullet++;
+                sDirctions[0] = 1;
+            } else if (MapTools.isPerson(sMapInfo[x - 1][y])) {
+                mNumOfPlayers++;
+                sDirctions[0] = 2;
+            }
+        }
+        if (!MapTools.isOutOfBounds(x + 1, y) && !MapTools.isWall(sMapInfo[x + 1][y])) {
+            if (MapTools.isGhost(sMapInfo[x + 1][y]) || sMapInfo[x + 1][y] == "^".charAt(0)) {
+                mNumOfGhostAndBullet++;
+                sDirctions[1] = 1;
+            } else if (MapTools.isPerson(sMapInfo[x + 1][y])) {
+                mNumOfPlayers++;
+                sDirctions[1] = 2;
+            }
+        }
+        if (!MapTools.isOutOfBounds(x, y - 1) && !MapTools.isWall(sMapInfo[x][y - 1])) {
+            if (MapTools.isGhost(sMapInfo[x][y - 1]) || sMapInfo[x][y - 1] == ">".charAt(0)) {
+                mNumOfGhostAndBullet++;
+                sDirctions[2] = 1;
+            } else if (MapTools.isPerson(sMapInfo[x][y - 1])) {
+                mNumOfPlayers++;
+                sDirctions[2] = 2;
+            }
+        }
+        if (!MapTools.isOutOfBounds(x, y + 1) && !MapTools.isWall(sMapInfo[x][y + 1])) {
+            if (MapTools.isGhost(sMapInfo[x][y + 1]) || sMapInfo[x][y + 1] == "<".charAt(0)) {
+                mNumOfGhostAndBullet++;
+                sDirctions[3] = 1;
+            } else if (MapTools.isPerson(sMapInfo[x][y + 1])) {
+                mNumOfPlayers++;
+                sDirctions[3] = 2;
+            }
+        }
+    }
+
+    public static int getCommandForCurrentDriction(int a) {
+        if (a == 1) {
+            return Integer.valueOf("2" + sCurrentDirction);
+        } else {
+            return Integer.valueOf("1" + sCurrentDirction);
+        }
+    }
+
+
+    public static boolean isHighestScore() {
+        if (sScoreList.length > 0) {
+            int myScore = sScoreList[sNum];
+            int highestScore = 0;
+            for (int i = 0; i < sScoreList.length; i++) {
+                if (sScoreList[i] > highestScore) {
+                    highestScore = sScoreList[i];
+                }
+            }
+            if (myScore == highestScore) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

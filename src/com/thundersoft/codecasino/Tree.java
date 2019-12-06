@@ -28,20 +28,28 @@ public class Tree {
     public Tree() {
     }
 
-    public void start(String string) {
-        createRoot(string);
+    public void start() {
+        createRoot();
         createSonNodes();
         findPaths();
         selectPathFromPaths();
     }
 
-    public void setRootMap(){
-
+    public void setRootMap(char[][] map) {
+        root.map = map;
     }
 
-    public void createRoot(String string) {
+    public void initRoot() {
+        root.map = MapUtil.sMapInfo;
+        root.xOfLocation_x = MapUtil.x;
+        root.yOfLocation_y = MapUtil.y;
+        root.mCurrentDirection = MapUtil.sCurrentDirction;
+    }
+
+    public void createRoot() {
         root = new Node();
-        root.createMap(string);
+//        root.createMap(string);
+        initRoot();
         root.FaNode = null;
         root.mScore = 0;//ke shan
         root.mDepth = 0;//ke shan
@@ -101,7 +109,7 @@ public class Tree {
 
             while (node.FLAG != 5) {
 
-                if (node.mDepth == 2 && node.isSafe) {
+                if (node.mDepth == 1 && node.isSafe) {
                     listOfSafeNode.add(listNodes.get(i));
                 } else if (node.mDepth == 2 && !node.isSafe) {
                     break;
@@ -217,5 +225,9 @@ public class Tree {
 //        root.G1 = null;
 //        root.G2 = null;
 //        root.G3 = null;
+    }
+
+    public  int getCommand(){
+        return path.get(0);
     }
 }

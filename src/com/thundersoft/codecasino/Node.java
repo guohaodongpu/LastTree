@@ -281,6 +281,55 @@ public class Node {
 
     public boolean isSafe(Node node) {
 
+        if(!MapTools.isOutOfBounds(node.xOfLocation_x-1,node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
+            if(!MapTools.isGhost(node.map[node.xOfLocation_x-1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
+                if(MapTools.isBullet(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
+                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x-1,node.yOfLocation_y,node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
+                        return false;
+                    }
+                }
+            }else {
+                return false;
+            }
+        }
+
+        if(!MapTools.isOutOfBounds(node.xOfLocation_x+1,node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
+            if(!MapTools.isGhost(node.map[node.xOfLocation_x+1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
+                if(MapTools.isBullet(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
+                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x+1,node.yOfLocation_y,node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
+                        return false;
+                    }
+                }
+            }else {
+                return false;
+            }
+        }
+
+        if(!MapTools.isOutOfBounds(node.xOfLocation_x,node.yOfLocation_y-1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
+            if(!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y-1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
+                if(MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
+                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x,node.yOfLocation_y-1,node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
+                        return false;
+                    }
+                }
+            }else {
+                return false;
+            }
+        }
+
+        if(!MapTools.isOutOfBounds(node.xOfLocation_x,node.yOfLocation_y+1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
+            if(!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y+1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
+                if(MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
+                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x,node.yOfLocation_y+1,node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
+                        return false;
+                    }
+                }
+            }else {
+                return false;
+            }
+        }
+
+        return true;
 //        int distance = 5;
 //        if (node.mDepth == 2) {
 //            distance = 1;
@@ -301,7 +350,6 @@ public class Node {
 //        if (G3.getDistance(node.xOfLocation_x, node.yOfLocation_y) <= distance) {
 //            return false;
 //        }
-        return true;
     }
 
     public boolean isSafe(Node node, int distance) {
