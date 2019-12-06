@@ -101,6 +101,7 @@ public class MessageListener implements Runnable {
                 }
                 case (char) 71: {// G
                     sFlagTypeReceived = TYPE_GAMEOVER;
+                    Client.sOnOff = 1;
                     MessageSender.sSendType = MessageSender.TYPE_FOR_SEND_QUIT;
                     break;
                 }
@@ -116,7 +117,7 @@ public class MessageListener implements Runnable {
                     break;
                 }
             }
-            System.out.println("FlagTypeReceived: " + sFlagTypeReceived + "\n" + stringBuffer);
+//            System.out.println("FlagTypeReceived: " + sFlagTypeReceived + "\n" + stringBuffer);
 //            switch (ch1) {
 //                case (char) 79:
 //                    ch2 = (char) inputStreamReader.read();

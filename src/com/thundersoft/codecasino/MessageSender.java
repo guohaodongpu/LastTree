@@ -52,6 +52,7 @@ public class MessageSender implements Runnable {
                             }
                             case TYPE_FOR_SEND_CONTROL: {
                                 mCommand = NO_ACTION_STR;
+//                                mCommand = MapUtil.getCommand();
                                 break;
                             }
                             case TYPE_FOR_SEND_QUIT: {

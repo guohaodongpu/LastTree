@@ -66,7 +66,7 @@ public class Node {
             }
         }
 
-        updateMap();
+//        updateMap();
         print();
     }
 
@@ -116,12 +116,12 @@ public class Node {
         }
     }
 
-    public void print(char[][] matrix) {
-        System.out.println();
-        for (int i = 0; i < 15; i++) {
-            System.out.println(String.copyValueOf(matrix[i]));
-        }
-    }
+//    public void print(char[][] matrix) {
+//        System.out.println();
+//        for (int i = 0; i < 15; i++) {
+//            System.out.println(String.copyValueOf(matrix[i]));
+//        }
+//    }
 
     public char[][] copyMap() {
         char[][] mapC = new char[15][15];

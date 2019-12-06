@@ -35,6 +35,10 @@ public class Tree {
         selectPathFromPaths();
     }
 
+    public void setRootMap(){
+
+    }
+
     public void createRoot(String string) {
         root = new Node();
         root.createMap(string);
@@ -190,19 +194,19 @@ public class Tree {
         switch (command) {
             case 0:
                 // xOfLocation_x=xOfLocation_x-1;
-                Client.OLD_COMMAND = "[w]";
+
                 return "[w]";
             case 1:
                 // xOfLocation_x=xOfLocation_x+1;
-                Client.OLD_COMMAND = "[s]";
+
                 return "[s]";
             case 2:
                 // yOfLocation_y=yOfLocation_y-1;
-                Client.OLD_COMMAND = "[a]";
+
                 return "[a]";
             case 3:
                 // yOfLocation_y=yOfLocation_y+1;
-                Client.OLD_COMMAND = "[d]";
+
                 return "[d]";
             default:
         }
@@ -210,8 +214,8 @@ public class Tree {
     }
 
     public void resetGhost() {
-        root.G1 = null;
-        root.G2 = null;
-        root.G3 = null;
+//        root.G1 = null;
+//        root.G2 = null;
+//        root.G3 = null;
     }
 }
