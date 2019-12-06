@@ -144,4 +144,21 @@ public class MapUtil {
 
         return  0;
     }
+
+    public static boolean isHighestScore(){
+       if (sScoreList.length > 0){
+           int myScore = sScoreList[sNum];
+           int highestScore = 0;
+           for (int i = 0; i < sScoreList.length;i++ ) {
+               if (sScoreList[i] > highestScore) {
+                   highestScore = sScoreList[i];
+               }
+           }
+           if (myScore == highestScore){
+               return true;
+           }
+       }
+       return false;
+    }
+
 }
