@@ -62,5 +62,14 @@ public class MapUtil {
         System.out.println("ScoreList: " + sScoreList);
     }
 
+    public static int[] getLocationXY(int location, int mapSize) {
+        int[] locationXY = new int[2];
+        int locationY = location % mapSize - 1;
+        int locationX = location / mapSize;
+        locationXY[0] = locationX;
+        locationXY[1] = locationY;
+        return locationXY;
+
+    }
 
 }
