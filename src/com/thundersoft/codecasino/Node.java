@@ -26,7 +26,7 @@ public class Node {
 
     Boolean isSafe;
 
-    char[][] map = new char[15][15];
+    char[][] map = new char[MapUtil.sMapSize][MapUtil.sMapSize];
 
 //    static Ghost G1 = null;
 //    static Ghost G2 = null;
@@ -111,7 +111,7 @@ public class Node {
 //    }
 
     public void print() {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < MapUtil.sMapSize; i++) {
             System.out.println(String.copyValueOf(map[i]));
         }
     }
@@ -124,9 +124,9 @@ public class Node {
 //    }
 
     public char[][] copyMap() {
-        char[][] mapC = new char[15][15];
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
+        char[][] mapC = new char[MapUtil.sMapSize][MapUtil.sMapSize];
+        for (int i = 0; i < MapUtil.sMapSize; i++) {
+            for (int j = 0; j < MapUtil.sMapSize; j++) {
                 mapC[i][j] = map[i][j];
             }
         }
@@ -145,13 +145,17 @@ public class Node {
         if (WSon.mCurrentDirection == mCurrentDirection) {
             if (xOfLocation_x > 0 && !MapTools.isWall(WSon.map[xOfLocation_x - 1][yOfLocation_y])
                     && !MapTools.isGhost(WSon.map[xOfLocation_x - 1][yOfLocation_y])) {
-                int scoreTemp = MapTools.charToInt(WSon.map[xOfLocation_x - 1][yOfLocation_y]);
-                WSon.mScore = WSon.FaNode.mScore + scoreTemp;
-                WSon.map[xOfLocation_x][WSon.yOfLocation_y] = "0".charAt(0);
-                WSon.xOfLocation_x = xOfLocation_x - 1;
-                WSon.map[WSon.xOfLocation_x][WSon.yOfLocation_y] = "w".charAt(0);
+                if(!MapTools.isPerson(WSon.map[xOfLocation_x - 1][yOfLocation_y]) && !MapTools.isBullet(WSon.map[xOfLocation_x - 1][yOfLocation_y])){
+                    int scoreTemp = MapTools.charToInt(WSon.map[xOfLocation_x - 1][yOfLocation_y]);
+                    WSon.mScore = WSon.FaNode.mScore + scoreTemp;
+                    WSon.map[xOfLocation_x][WSon.yOfLocation_y] = "0".charAt(0);
+                    WSon.xOfLocation_x = xOfLocation_x - 1;
+                    WSon.map[WSon.xOfLocation_x][WSon.yOfLocation_y] = "w".charAt(0);
+                }
             } else if (xOfLocation_x > 0 && (MapTools.isWall(WSon.map[xOfLocation_x - 1][yOfLocation_y])
-                    || MapTools.isGhost(WSon.map[xOfLocation_x - 1][yOfLocation_y]))) {
+                    || MapTools.isGhost(WSon.map[xOfLocation_x - 1][yOfLocation_y]) ||
+                    MapTools.isPerson(WSon.map[xOfLocation_x - 1][yOfLocation_y]) ||
+                    MapTools.isBullet(WSon.map[xOfLocation_x - 1][yOfLocation_y]))) {
                 WSon.xOfLocation_x = xOfLocation_x;
                 WSon.map[WSon.xOfLocation_x][WSon.yOfLocation_y] = "w".charAt(0);
                 WSon.mScore = WSon.FaNode.mScore;
@@ -179,22 +183,26 @@ public class Node {
         SSon.FaNode = this;
         SSon.mDepth = SSon.FaNode.mDepth + 1;
         if (SSon.mCurrentDirection == mCurrentDirection) {
-            if (xOfLocation_x < 14 && !MapTools.isWall(SSon.map[xOfLocation_x + 1][yOfLocation_y])
-                    && !MapTools.isGhost(SSon.map[xOfLocation_x + 1][yOfLocation_y])) {
+            if (xOfLocation_x < MapUtil.sMapSize - 1 && !MapTools.isWall(SSon.map[xOfLocation_x + 1][yOfLocation_y])
+                    && !MapTools.isGhost(SSon.map[xOfLocation_x + 1][yOfLocation_y]) &&
+                    !MapTools.isPerson(SSon.map[xOfLocation_x + 1][yOfLocation_y]) &&
+                    !MapTools.isBullet(SSon.map[xOfLocation_x + 1][yOfLocation_y])) {
 
                 int scoreTemp = MapTools.charToInt(SSon.map[xOfLocation_x + 1][yOfLocation_y]);
                 SSon.mScore = SSon.FaNode.mScore + scoreTemp;
                 SSon.map[xOfLocation_x][SSon.yOfLocation_y] = "0".charAt(0);
                 SSon.xOfLocation_x = xOfLocation_x + 1;
                 SSon.map[SSon.xOfLocation_x][SSon.yOfLocation_y] = "s".charAt(0);
-            } else if (xOfLocation_x < 14 && (MapTools.isWall(SSon.map[xOfLocation_x + 1][yOfLocation_y])
-                    || MapTools.isGhost(SSon.map[xOfLocation_x + 1][yOfLocation_y]))) {
+            } else if (xOfLocation_x < MapUtil.sMapSize - 1 && (MapTools.isWall(SSon.map[xOfLocation_x + 1][yOfLocation_y])
+                    || MapTools.isGhost(SSon.map[xOfLocation_x + 1][yOfLocation_y]) ||
+                    MapTools.isPerson(SSon.map[xOfLocation_x + 1][yOfLocation_y]) ||
+                    MapTools.isBullet(SSon.map[xOfLocation_x + 1][yOfLocation_y]))) {
 
                 SSon.xOfLocation_x = xOfLocation_x;
                 SSon.map[SSon.xOfLocation_x][SSon.yOfLocation_y] = "s".charAt(0);
                 SSon.mScore = SSon.FaNode.mScore;
             } else {
-                SSon.xOfLocation_x = 14;
+                SSon.xOfLocation_x = MapUtil.sMapSize - 1;
                 SSon.map[SSon.xOfLocation_x][SSon.yOfLocation_y] = "s".charAt(0);
                 SSon.mScore = SSon.FaNode.mScore;
             }
@@ -217,7 +225,8 @@ public class Node {
         ASon.mDepth = ASon.FaNode.mDepth + 1;
         if (ASon.mCurrentDirection == mCurrentDirection) {
             if (yOfLocation_y > 0 && !MapTools.isWall(ASon.map[xOfLocation_x][yOfLocation_y - 1])
-                    && !MapTools.isGhost(ASon.map[xOfLocation_x][yOfLocation_y - 1])) {
+                    && !MapTools.isGhost(ASon.map[xOfLocation_x][yOfLocation_y - 1]) && !MapTools.isPerson(ASon.map[xOfLocation_x][yOfLocation_y - 1])
+                    && !MapTools.isBullet(ASon.map[xOfLocation_x][yOfLocation_y - 1])) {
 
                 int scoreTemp = MapTools.charToInt(ASon.map[xOfLocation_x][yOfLocation_y - 1]);
                 ASon.mScore = ASon.FaNode.mScore + scoreTemp;
@@ -225,7 +234,8 @@ public class Node {
                 ASon.yOfLocation_y = yOfLocation_y - 1;
                 ASon.map[ASon.xOfLocation_x][ASon.yOfLocation_y] = "a".charAt(0);
             } else if (yOfLocation_y > 0 && (MapTools.isWall(ASon.map[xOfLocation_x][yOfLocation_y - 1])
-                    || MapTools.isGhost(ASon.map[xOfLocation_x][yOfLocation_y - 1]))) {
+                    || MapTools.isGhost(ASon.map[xOfLocation_x][yOfLocation_y - 1]) || MapTools.isPerson(ASon.map[xOfLocation_x][yOfLocation_y - 1])
+                    || MapTools.isBullet(ASon.map[xOfLocation_x][yOfLocation_y - 1]))) {
 
                 ASon.yOfLocation_y = yOfLocation_y;
                 ASon.map[ASon.xOfLocation_x][ASon.yOfLocation_y] = "a".charAt(0);
@@ -253,20 +263,24 @@ public class Node {
         DSon.FaNode = this;
         DSon.mDepth = DSon.FaNode.mDepth + 1;
         if (DSon.mCurrentDirection == mCurrentDirection) {
-            if (yOfLocation_y < 14 && !MapTools.isWall(DSon.map[xOfLocation_x][yOfLocation_y + 1])
-                    && !MapTools.isGhost(DSon.map[xOfLocation_x][yOfLocation_y + 1])) {
+            if (yOfLocation_y < MapUtil.sMapSize - 1 && !MapTools.isWall(DSon.map[xOfLocation_x][yOfLocation_y + 1])
+                    && !MapTools.isGhost(DSon.map[xOfLocation_x][yOfLocation_y + 1]) && !MapTools.isPerson(DSon.map[xOfLocation_x][yOfLocation_y + 1])
+                    && !MapTools.isBullet(DSon.map[xOfLocation_x][yOfLocation_y + 1])) {
+
                 int scoreTemp = MapTools.charToInt(DSon.map[xOfLocation_x][yOfLocation_y + 1]);
                 DSon.mScore = DSon.FaNode.mScore + scoreTemp;
                 DSon.map[DSon.xOfLocation_x][yOfLocation_y] = "0".charAt(0);
                 DSon.yOfLocation_y = yOfLocation_y + 1;
                 DSon.map[DSon.xOfLocation_x][DSon.yOfLocation_y] = "d".charAt(0);
-            } else if (yOfLocation_y < 14 && (MapTools.isWall(DSon.map[xOfLocation_x][yOfLocation_y + 1])
-                    || MapTools.isGhost(DSon.map[xOfLocation_x][yOfLocation_y + 1]))) {
+            } else if (yOfLocation_y < MapUtil.sMapSize - 1 && (MapTools.isWall(DSon.map[xOfLocation_x][yOfLocation_y + 1])
+                    || MapTools.isGhost(DSon.map[xOfLocation_x][yOfLocation_y + 1]) || MapTools.isPerson(DSon.map[xOfLocation_x][yOfLocation_y + 1])
+                    || MapTools.isBullet(DSon.map[xOfLocation_x][yOfLocation_y + 1]))) {
+
                 DSon.yOfLocation_y = yOfLocation_y;
                 DSon.map[DSon.xOfLocation_x][DSon.yOfLocation_y] = "d".charAt(0);
                 DSon.mScore = DSon.FaNode.mScore;
             } else {
-                DSon.yOfLocation_y = 14;
+                DSon.yOfLocation_y = MapUtil.sMapSize - 1;
                 DSon.map[DSon.xOfLocation_x][DSon.yOfLocation_y] = "d".charAt(0);
                 DSon.mScore = DSon.FaNode.mScore;
             }
@@ -281,50 +295,50 @@ public class Node {
 
     public boolean isSafe(Node node) {
 
-        if(!MapTools.isOutOfBounds(node.xOfLocation_x-1,node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
-            if(!MapTools.isGhost(node.map[node.xOfLocation_x-1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
-                if(MapTools.isBullet(node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
-                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x-1,node.yOfLocation_y,node.map[node.xOfLocation_x-1][node.yOfLocation_y])){
+        if (!MapTools.isOutOfBounds(node.xOfLocation_x - 1, node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x - 1][node.yOfLocation_y])) {
+            if (!MapTools.isGhost(node.map[node.xOfLocation_x - 1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x - 1][node.yOfLocation_y])) {
+                if (MapTools.isBullet(node.map[node.xOfLocation_x - 1][node.yOfLocation_y])) {
+                    if (!MapTools.isSafeBullet(node.xOfLocation_x, node.yOfLocation_y, node.xOfLocation_x - 1, node.yOfLocation_y, node.map[node.xOfLocation_x - 1][node.yOfLocation_y])) {
                         return false;
                     }
                 }
-            }else {
+            } else {
                 return false;
             }
         }
 
-        if(!MapTools.isOutOfBounds(node.xOfLocation_x+1,node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
-            if(!MapTools.isGhost(node.map[node.xOfLocation_x+1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
-                if(MapTools.isBullet(node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
-                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x+1,node.yOfLocation_y,node.map[node.xOfLocation_x+1][node.yOfLocation_y])){
+        if (!MapTools.isOutOfBounds(node.xOfLocation_x + 1, node.yOfLocation_y) && !MapTools.isWall(node.map[node.xOfLocation_x + 1][node.yOfLocation_y])) {
+            if (!MapTools.isGhost(node.map[node.xOfLocation_x + 1][node.yOfLocation_y]) && !MapTools.isPerson(node.map[node.xOfLocation_x + 1][node.yOfLocation_y])) {
+                if (MapTools.isBullet(node.map[node.xOfLocation_x + 1][node.yOfLocation_y])) {
+                    if (!MapTools.isSafeBullet(node.xOfLocation_x, node.yOfLocation_y, node.xOfLocation_x + 1, node.yOfLocation_y, node.map[node.xOfLocation_x + 1][node.yOfLocation_y])) {
                         return false;
                     }
                 }
-            }else {
+            } else {
                 return false;
             }
         }
 
-        if(!MapTools.isOutOfBounds(node.xOfLocation_x,node.yOfLocation_y-1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
-            if(!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y-1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
-                if(MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
-                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x,node.yOfLocation_y-1,node.map[node.xOfLocation_x][node.yOfLocation_y-1])){
+        if (!MapTools.isOutOfBounds(node.xOfLocation_x, node.yOfLocation_y - 1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y - 1])) {
+            if (!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y - 1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y - 1])) {
+                if (MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y - 1])) {
+                    if (!MapTools.isSafeBullet(node.xOfLocation_x, node.yOfLocation_y, node.xOfLocation_x, node.yOfLocation_y - 1, node.map[node.xOfLocation_x][node.yOfLocation_y - 1])) {
                         return false;
                     }
                 }
-            }else {
+            } else {
                 return false;
             }
         }
 
-        if(!MapTools.isOutOfBounds(node.xOfLocation_x,node.yOfLocation_y+1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
-            if(!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y+1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
-                if(MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
-                    if(!MapTools.isSafeBullet(node.xOfLocation_x,node.yOfLocation_y,node.xOfLocation_x,node.yOfLocation_y+1,node.map[node.xOfLocation_x][node.yOfLocation_y+1])){
+        if (!MapTools.isOutOfBounds(node.xOfLocation_x, node.yOfLocation_y + 1) && !MapTools.isWall(node.map[node.xOfLocation_x][node.yOfLocation_y + 1])) {
+            if (!MapTools.isGhost(node.map[node.xOfLocation_x][node.yOfLocation_y + 1]) && !MapTools.isPerson(node.map[node.xOfLocation_x][node.yOfLocation_y + 1])) {
+                if (MapTools.isBullet(node.map[node.xOfLocation_x][node.yOfLocation_y + 1])) {
+                    if (!MapTools.isSafeBullet(node.xOfLocation_x, node.yOfLocation_y, node.xOfLocation_x, node.yOfLocation_y + 1, node.map[node.xOfLocation_x][node.yOfLocation_y + 1])) {
                         return false;
                     }
                 }
-            }else {
+            } else {
                 return false;
             }
         }

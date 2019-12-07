@@ -16,7 +16,7 @@ public class MapUtil {
     static int[] sLocationList;
     static int[] sScoreList;
 
-    static int sCurrentDirction;
+    static int sCurrentDirection;
     static int x;
     static int y;
 
@@ -71,15 +71,19 @@ public class MapUtil {
         System.out.println("Token: " + sToken + "\n" + " MapBase :" + sMapBase);
         String locationListString = list2[0].substring(3, list2[0].length() - 2);
         String scoreListString = list2[1].substring(3, list2[1].length() - 1);
-
         sLocationList = stringListToIntList(locationListString);
         System.out.println("LocationList: " + locationListString);
+        System.out.println("LocationSelf: " + sLocationList[sNum]);
+        if (sLocationList[sNum] == -1) {//如果已经死了，直接return;
+            return;
+        }
         sScoreList = stringListToIntList(scoreListString);
         System.out.println("ScoreList: " + scoreListString);
 
         createMap(sMapBase);
 
         getLocationXY(sLocationList[sNum], sMapSize);
+        System.out.println("LocationXY: x: " + x + " y: " + y);
         getCurrentDirection();
 
         calculate();
@@ -87,7 +91,7 @@ public class MapUtil {
 
     public static int[] getLocationXY(int location, int mapSize) {
         int[] locationXY = new int[2];
-        int locationY = location % mapSize - 1;
+        int locationY = location % mapSize;
         int locationX = location / mapSize;
         locationXY[0] = locationX;
         locationXY[1] = locationY;
@@ -100,8 +104,8 @@ public class MapUtil {
         String string = str;
         char[] chars = string.toCharArray();
         int i = 0;
-        for (int j = 0; j < 15; j++) {
-            for (int k = 0; k < 15; k++) {
+        for (int j = 0; j < MapUtil.sMapSize; j++) {
+            for (int k = 0; k < MapUtil.sMapSize; k++) {
                 sMapInfo[j][k] = chars[i];
                 i++;
             }
@@ -110,7 +114,7 @@ public class MapUtil {
     }
 
     public static void print() {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < MapUtil.sMapSize; i++) {
             System.out.println(String.copyValueOf(sMapInfo[i]));
         }
     }
@@ -159,7 +163,7 @@ public class MapUtil {
         if (mNumOfPlayers > 0) {
             for (int i = 0; i < 4; i++) {
                 if (sDirctions[i] == 2) {
-                    if (sCurrentDirction == i) {
+                    if (sCurrentDirection == i) {
                         return 24;
                     } else {
                         return 20;
@@ -167,11 +171,11 @@ public class MapUtil {
                 }
             }
         } else if (mNumOfGhostAndBullet > 1) {
-            return getCommandForCurrentDriction(1);
+            return getCommandForCurrentDirection(1);
         } else if (mNumOfGhostAndBullet == 1) {
             for (int i = 0; i < 4; i++) {
                 if (sDirctions[i] == 1) {
-                    if (sCurrentDirction == i) {
+                    if (sCurrentDirection == i) {
                         return 24;
                     } else {
                         return 20;
@@ -241,11 +245,11 @@ public class MapUtil {
         }
     }
 
-    public static int getCommandForCurrentDriction(int a) {
+    public static int getCommandForCurrentDirection(int a) {
         if (a == 1) {
-            return Integer.valueOf("2" + sCurrentDirction);
+            return Integer.valueOf("2" + sCurrentDirection);
         } else {
-            return Integer.valueOf("1" + sCurrentDirction);
+            return Integer.valueOf("1" + sCurrentDirection);
         }
     }
 

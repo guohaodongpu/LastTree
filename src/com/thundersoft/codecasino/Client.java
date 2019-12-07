@@ -59,7 +59,5 @@ public class Client {
         //Client client = new Client("10.0.28.197", 9527);//測試
         Client client = new Client("106.2.164.79", 9527);//正式
         client.start();
-
     }
-
 }

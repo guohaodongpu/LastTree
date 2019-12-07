@@ -22,7 +22,7 @@ public class MapTools {
         return false;
     }
 
-    public static boolean isBullet(char ch){
+    public static boolean isBullet(char ch) {
         if (ch == "v".charAt(0) || ch == "^".charAt(0) || ch == ">".charAt(0) || ch == "<".charAt(0)) {
             return true;
         }
@@ -57,14 +57,14 @@ public class MapTools {
 
 
     public static boolean isOutOfBounds(int x) {
-        if (x > 14 || x < 0) {
+        if (x > MapUtil.sMapSize - 1 || x < 0) {
             return true;
         }
         return false;
     }
 
     public static boolean isOutOfBounds(int x, int y) {
-        if (x < 0 || x > 14 || y < 0 || y > 14) {
+        if (x < 0 || x > MapUtil.sMapSize - 1 || y < 0 || y > MapUtil.sMapSize) {
             return true;
         }
         return false;

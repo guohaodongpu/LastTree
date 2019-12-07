@@ -23,6 +23,7 @@ public class MessageSender implements Runnable {
     final static String HEART_STR = "(H)";
     final static String QUIR_STR = "(QUIT)";
     final static String NO_ACTION_STR = "";
+
     public MessageSender(Socket socket) {
         this.socket = socket;
     }
@@ -51,8 +52,8 @@ public class MessageSender implements Runnable {
                                 break;
                             }
                             case TYPE_FOR_SEND_CONTROL: {
-                                mCommand = NO_ACTION_STR;
-//                                mCommand = MapUtil.getCommand();
+//                                mCommand = NO_ACTION_STR;
+                                mCommand = MapUtil.getCommand();
                                 break;
                             }
                             case TYPE_FOR_SEND_QUIT: {
@@ -79,8 +80,6 @@ public class MessageSender implements Runnable {
             // TODO: handle exception
             e.printStackTrace();
         }
-
-
     }
 
 }

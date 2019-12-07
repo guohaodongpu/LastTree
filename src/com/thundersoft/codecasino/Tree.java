@@ -29,10 +29,14 @@ public class Tree {
     }
 
     public void start() {
-        createRoot();
-        createSonNodes();
-        findPaths();
-        selectPathFromPaths();
+        try {
+            createRoot();
+            createSonNodes();
+            findPaths();
+            selectPathFromPaths();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRootMap(char[][] map) {
@@ -43,7 +47,7 @@ public class Tree {
         root.map = MapUtil.sMapInfo;
         root.xOfLocation_x = MapUtil.x;
         root.yOfLocation_y = MapUtil.y;
-        root.mCurrentDirection = MapUtil.sCurrentDirction;
+        root.mCurrentDirection = MapUtil.sCurrentDirection;
     }
 
     public void createRoot() {
@@ -227,7 +231,12 @@ public class Tree {
 //        root.G3 = null;
     }
 
-    public  int getCommand(){
-        return path.get(0);
+    public int getCommand() {
+        try {
+            return path.get(0);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return 14;
+        }
     }
 }

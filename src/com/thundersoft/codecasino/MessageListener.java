@@ -23,7 +23,6 @@ public class MessageListener implements Runnable {
     final static int TYPE_FOR_OK_HEART = 3;
 
 
-
     public MessageListener(Socket s) {
         this.socket = s;
         try {
@@ -74,11 +73,11 @@ public class MessageListener implements Runnable {
             while (isInputStreamReady()) {
                 stringBuffer.append((char) inputStreamReader.read());
             }
-            System.out.println(": "+ stringBuffer);
+            System.out.println(": " + stringBuffer);
             switch (ch2) {
                 case (char) 79: {// O
                     sFlagTypeReceived = TYPE_OK;
-                    if (sFlagTypeForOK == TYPE_FOR_OK_KEY){
+                    if (sFlagTypeForOK == TYPE_FOR_OK_KEY) {
                         Client.sSendHeartOnOff = 0;
                     }
                     break;
@@ -89,9 +88,9 @@ public class MessageListener implements Runnable {
                 }
                 case (char) 83: {// S
                     sFlagTypeReceived = TYPE_START;
-                    Client.sOnOff = 1;
                     sFlagTypeForOK = TYPE_FOR_OK_CONTROL;
                     MessageSender.sSendType = MessageSender.TYPE_FOR_SEND_READY;
+                    Client.sOnOff = 1;
                     MapUtil.parseMapSize(stringBuffer.toString());
                     break;
                 }
@@ -101,16 +100,15 @@ public class MessageListener implements Runnable {
                 }
                 case (char) 71: {// G
                     sFlagTypeReceived = TYPE_GAMEOVER;
-                    Client.sOnOff = 1;
                     MessageSender.sSendType = MessageSender.TYPE_FOR_SEND_QUIT;
+                    Client.sOnOff = 1;
                     break;
                 }
                 case (char) 77: {// M
                     sFlagTypeReceived = TYPE_MAP;
-                    Client.sOnOff = 1;
                     MapUtil.parseMapInfo(stringBuffer.toString());
                     MessageSender.sSendType = MessageSender.TYPE_FOR_SEND_CONTROL;
-
+                    Client.sOnOff = 1;
                     break;
                 }
                 default: {
